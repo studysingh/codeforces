@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question by tag and rating</title>
+</head>
+
+<body>
+  <button id="btn">Give quetion by rating </button><br /><br />
+  <label for="tag">Enter tag</label>
+  <input type="text" placeholder="Enter tag" id="tag"><br /><br />
+  <button id="btn2">Give quetion by tag </button>
+  <p id="error"></p>
+</body>
+<script>
+  const fetchUser = async () => {
+    const respo = await fetch('https://codeforces.com/api/user.info?handles=firevision&checkHistoricHandles=false');
+
+    if (!respo.ok) {
+      throw new Error(`HTTP error! Status: ${respo.status}`);
+    }
+
+    const jsonData = await respo.json();
+    console.log(jsonData.result);
+  };
+
+  fetchUser();
+  // fetch Using Rating
+  const fetchRating = async () => {
+    const apiUrl = `https://codeforces.com/api/problemset.problems?tags=implementation`;
+    const respo = await fetch(apiUrl);
+    const data = await respo.json();
+    const problems = data.result.problems;
+    console.log(problems[1].rating);
+    let i = 0;
+    for (const pr in problems) {
+      if (i > 4) break;
+      if (problems[pr].rating <= 1200 && problems[pr].rating >= 1000) {
+        const contest = problems[pr].contestId;
+        const idx = problems[pr].index;
+        const link = `https://codeforces.com/contest/${contest}/problem/${idx}`;
+        window.open(link, '_blank')
+        i++;
+      }
+    }
+  };
+
+  // fetch using tags
+  const fetchTags = async () => {
+
+    const inputContainer = document.querySelector('#tag')
+    const getTag = inputContainer.value;
+    const respo = await fetch(apiUrl);
+    const data = await respo.json();
+    const problems = data.result.problems;
+
+    let i = 0;
+    for (const pr in problems) {
+
+      let check = false;
+      const tags = problems[pr].tags;
+      tags.forEach((tag) => {
+        // console.log(tag);
+        if (tag == getTag) {
+          check = true;
+        }
+      })
+
+      if (check) {
+        const contest = problems[pr].contestId;
+        const idx = problems[pr].index;
+        const link = `https://codeforces.com/contest/${contest}/problem/${idx}`;
+        window.open(link, '_blank')
+        // console.log(link)
+        i++;
+      }
+
+      if (i > 2) break;
+    }
+    console.log(i);
+    let error = document.getElementById('error');
+
+    if (i == 0) error.append('error found')
+  };
+
+  const btn = document.querySelector('#btn');
+  const btn2 = document.querySelector('#btn2');
+  btn.addEventListener('click', fetchRating)
+  btn2.addEventListener('click', fetchTags)
+
+</script>
+
+</html>
