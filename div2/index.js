@@ -1,4 +1,4 @@
-const { username, div } = require("./details");
+const { username, div, problemType } = require("./details");
 //give all the contest of division div
 const contestDivision = async (div) => {
   const response = await fetch("https://codeforces.com/api/contest.list");
@@ -59,7 +59,6 @@ const checkExistence = async (contestid, problemType, username) => {
 // Give the unsolved problem of a user
 const nProblems = async (username, div) => {
   const contest = await contestDivision(div);
-  const problemType = ["A", "B", "C"];
   // finding the question
   while (true) {
     let contestIdx = Math.floor(Math.random() * contest.length);
@@ -75,4 +74,5 @@ const nProblems = async (username, div) => {
     }
   }
 };
-nProblems(username, div);
+nProblems(username, div, problemType);
+// console.log(username);

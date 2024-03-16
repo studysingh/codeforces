@@ -1,3 +1,4 @@
-const username = "username";
+const username = require('./username')
 const div = 2;
-module.exports = { username, div };
+const problemType = ["B", "C"];
+module.exports = { username, div, problemType };
